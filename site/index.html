@@ -82,7 +82,9 @@ p { margin: 0; text-wrap: pretty; }
 }
 @keyframes progress { to { transform: scaleX(1); } }
 @supports not (animation-timeline: scroll()) { .bar::after { display: none; } }
-.mark { display: flex; align-items: center; gap: 10px; font-weight: 800; font-variation-settings: "wdth" 118; text-decoration: none; color: var(--prussian); margin-right: auto; letter-spacing: -0.01em; white-space: nowrap; }
+.mark { display: flex; align-items: center; gap: 10px; font-weight: 800; font-variation-settings: "wdth" 118; text-decoration: none; color: var(--prussian); margin-right: auto; letter-spacing: -0.01em; white-space: nowrap; min-width: 0; }
+.mark span { overflow: hidden; text-overflow: ellipsis; }
+.mark i, .bar .btn { flex: none; }
 .mark i { width: 26px; height: 26px; border-radius: 6px; background: var(--prussian); display: grid; place-items: center; color: var(--model); font: 700 0.75rem/1 var(--mono); font-style: normal; letter-spacing: 0; }
 .bar nav { display: flex; gap: 22px; font-size: 0.9375rem; }
 .bar nav a { text-decoration: none; color: var(--slate); padding-block: 4px; border-bottom: 2px solid transparent; transition: color .2s, border-color .2s; }
@@ -247,7 +249,7 @@ footer a:hover { color: var(--prussian); }
   .hero-foot .actions, .contact .actions { width: 100%; }
   .hero-foot .actions .btn, .contact .actions .btn { flex: 1; justify-content: center; }
 }
-@media (max-width: 380px) { .mark span { display: none; } }
+@media (max-width: 520px) { .mark span { display: none; } }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .cue::after, .tip { animation: none; }
