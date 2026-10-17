@@ -5,7 +5,8 @@ import * as THREE from 'three';
 
 const root = document.documentElement;
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
-const NARROW = () => innerWidth < 900;
+const NARROW = () => innerWidth < 900; // the sheet sits below the model instead of beside it
+const TALL = () => innerWidth < innerHeight; // portrait screens get their own camera framing
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const smooth = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
 const v = (x, y, z) => new THREE.Vector3(x, y, z);
@@ -30,6 +31,17 @@ themeBtn.addEventListener('click', () => {
 });
 darkMQ.addEventListener('change', syncTheme);
 syncTheme();
+
+/* ---------- phone menu ---------- */
+const bar = document.getElementById('bar'), menuBtn = document.getElementById('menu');
+function setMenu(open) {
+  bar.classList.toggle('open', open);
+  menuBtn.setAttribute('aria-expanded', open);
+  menuBtn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+}
+menuBtn.addEventListener('click', () => setMenu(!bar.classList.contains('open')));
+document.getElementById('nav').addEventListener('click', e => { if (e.target.closest('a')) setMenu(false); });
+addEventListener('keydown', e => { if (e.key === 'Escape') setMenu(false); });
 
 const PAL = {
   light: { bg: 0xE4E6E8, ground: 0xBFC5CC, model: 0xF6F7F8, edge: 0xC3C9D2, accent: 0x14305A, slate: 0x5B6675, oak: 0xB9824A, dup: 0x7C93B8,
@@ -117,7 +129,7 @@ async function start() {
     h *= 1.45; // readable from the overview distance
     s.scale.set(h * canvas.width / canvas.height, h, 1);
     s.renderOrder = 5;
-    const l = { text, muted, canvas, ctx, tex };
+    const l = { text, muted, canvas, ctx, tex, s, base: s.scale.clone() };
     labels.push(l);
     drawLabel(l);
     return s;
@@ -260,6 +272,7 @@ async function start() {
   const plinthB = place(box(14, 0.6, 12), P, 9, 0, 0);
   const tagA = place(label('Original company', 1.1, true), P, -9, 6.5, -5);
   const tagB = place(label('New company', 1.1, true), P, 9, 6.5, -5);
+  const splitDir = v(1, 0, 0), posA = v(0, 0, 0), posB = v(0, 0, 0);
   const apps = Array.from({ length: 20 }, (_, i) => {
     const gx = (i % 5 - 2) * 2.5, gz = (Math.floor(i / 5) - 1.5) * 2.5;
     const h = 1.2 + ((i * 37) % 11) / 4.4;
@@ -303,17 +316,31 @@ async function start() {
   const CAMS = {
     hero: () => ({ pos: v(8, 82, 108), target: v(8, 0, -12) }),
     platform: t => ({ pos: v(Q.x - 6 + t * 8, 28, Q.z + (NARROW() ? 54 : 38)), target: v(Q.x, 3, Q.z - 1) }),
-    portfolio: t => ({ pos: v(P.x, 26 - t * 4, P.z + (NARROW() ? 46 : 32) - t * 4), target: v(P.x, 1.5, P.z) }),
+    portfolio: t => ({ pos: v(P.x, 28 - t * 4, P.z + (NARROW() ? 46 : 38) - t * 4), target: v(P.x, 1.5, P.z) }),
     career: t => {
-      const a = -0.45 + t * 0.9, r = NARROW() ? 46 : 30, cx = T.x + (NARROW() ? 5 : 0); // on phones aim between tower and labels
+      const a = -0.45 + t * 0.9, r = NARROW() ? 50 : 44, cx = T.x + 5; // aim between the tower and its labels
       return { pos: v(cx + Math.sin(a) * r, 12 + t * 14, T.z + Math.cos(a) * r), target: v(cx, 5 + t * 9, T.z) };
     },
     skills: () => ({ pos: v(0, 110, 60), target: v(0, 0, -12) }),
     contact: () => ({ pos: v(-8, 22, 62), target: v(-22, 9, 0) }),
   };
+  // portrait phones: closer shots that track along each district instead of one wide overview
+  const CAMS_TALL = {
+    hero: () => ({ pos: v(8, 54, 96), target: v(-20, 6, -14) }),
+    career: t => {
+      const a = -0.3 + t * 0.5, r = 66, cx = T.x + 7; // aim between the tower and its labels
+      return { pos: v(cx + Math.sin(a) * r, 16 + t * 12, T.z + Math.cos(a) * r), target: v(cx, 8 + t * 5, T.z) };
+    },
+    // pan from the iPad, over the exploding monolith, to the planned microservices
+    platform: t => { const x = Q.x - 11 + smooth(0.05, 0.95, t) * 24; return { pos: v(x, 40, Q.z + 42), target: v(x, 1, Q.z) }; },
+    // the two companies stack front to back, so they read top to bottom on a tall screen
+    portfolio: t => ({ pos: v(P.x, 44 - t * 4, P.z + 33), target: v(P.x, 0, P.z - 2) }),
+    skills: () => ({ pos: v(6, 120, 90), target: v(6, 0, -12) }),
+    contact: () => ({ pos: v(-12, 26, 58), target: v(-30, 9, 0) }),
+  };
   // sideways and upward shift of the rendered view, so the model sits beside (or above) the text
-  const LENS = { hero: [0.14, 0.17], platform: [0.2, 0], portfolio: [-0.2, 0], career: [0.2, 0], skills: [0, 0], contact: [0.12, 0] };
-  const LENS_NARROW = { hero: [0, 0.14], platform: [0, 0.22], portfolio: [0, 0.22], career: [0, 0.22], skills: [0, 0], contact: [0, 0] };
+  const LENS = { hero: [0.14, 0.17], platform: [0.2, 0], portfolio: [-0.2, 0], career: [-0.2, 0], skills: [0, 0], contact: [0.12, 0] };
+  const LENS_NARROW = { hero: [0, 0.24], platform: [0, 0.1], portfolio: [0, 0.1], career: [0, 0.1], skills: [0, 0], contact: [0, 0] };
 
   const sections = [...document.querySelectorAll('[data-cam]')];
   const order = sections.map(s => s.dataset.cam);
@@ -325,7 +352,9 @@ async function start() {
     sections.forEach((s, i) => { if (s.getBoundingClientRect().top <= line) idx = i; });
     const r = sections[idx].getBoundingClientRect();
     active = order[idx];
-    local = clamp((line - r.top) / Math.max(1, r.height - innerHeight * 0.3), 0, 1);
+    // on phones the animation plays out across the empty stage, finishing as the sheet covers the lower fifth
+    const sheet = NARROW() && sections[idx].querySelector('.sheet');
+    local = clamp((line - r.top) / Math.max(1, sheet ? sheet.offsetTop - innerHeight * 0.25 : r.height - innerHeight * 0.3), 0, 1);
     navLinks.forEach(a => a.classList.toggle('on', a.getAttribute('href') === '#' + sections[idx].id));
   }
   // progress through a named section: -1 before it, 0..1 inside it, 2 after it
@@ -355,11 +384,13 @@ async function start() {
     });
     hovered = m;
     document.body.style.cursor = m ? 'pointer' : '';
-    inspectBox.innerHTML = m ? `<b>${m.userData.info[0]}</b>${m.userData.info[1]}` : defaultInspect;
+    inspectBox.innerHTML = tip.innerHTML = m ? `<b>${m.userData.info[0]}</b>${m.userData.info[1]}` : defaultInspect;
     dirty = true;
   }
+  const tip = document.getElementById('tip'), platformSheet = document.querySelector('#platform .sheet');
+  tip.innerHTML = defaultInspect;
   addEventListener('pointermove', e => { if (e.pointerType === 'mouse') setHover(pick(e)); }, { passive: true });
-  addEventListener('click', e => { const m = pick(e); if (m) setHover(m); });
+  addEventListener('click', e => { if (!e.target.closest('.sheet, .bar, .tip')) setHover(pick(e)); });
 
   /* ---------- loop ---------- */
   let last = performance.now(), first = true;
@@ -367,7 +398,12 @@ async function start() {
   function resize() {
     renderer.setSize(innerWidth, innerHeight, false);
     camera.aspect = innerWidth / innerHeight;
+    // widen the lens on portrait screens so the models fit across, and enlarge labels to stay legible
+    camera.fov = TALL() ? Math.min(56, 38 + (1 - camera.aspect) * 34) : 38 * clamp(1.75 / camera.aspect, 1, 1.3);
     camera.updateProjectionMatrix();
+    labels.forEach(l => l.s.scale.copy(l.base).multiplyScalar(TALL() ? 1.15 : 1));
+    if (TALL()) splitDir.set(0, 0, -1); else splitDir.set(1, 0, 0);
+    first = true; // jump straight to the new framing
     dirty = true;
   }
   addEventListener('resize', resize);
@@ -380,7 +416,9 @@ async function start() {
     readScroll();
 
     // camera eases toward the active section's waypoint
-    const goal = CAMS[active](local);
+    const goal = (TALL() ? CAMS_TALL : CAMS)[active](local);
+    tip.hidden = !(NARROW() && active === 'platform' && platformSheet.getBoundingClientRect().top > innerHeight - 30);
+    if (hovered && active !== 'platform') setHover(null);
     const k = first || RM ? 1 : 1 - Math.pow(0.02, dt);
     camPos.lerp(goal.pos, k); camTarget.lerp(goal.target, k);
     camera.position.copy(camPos); camera.lookAt(camTarget);
@@ -429,21 +467,27 @@ async function start() {
     const p = pal();
     const qs = stage('portfolio');
     const s = qs === -1 ? 0 : qs === 2 ? 1 : smooth(0.2, 0.8, qs);
-    plinthA.position.x = P.x - 9 * s;
+    // the companies separate along splitDir: sideways on wide screens, front to back on tall ones
+    plinthA.position.copy(P).addScaledVector(splitDir, -9 * s);
+    plinthB.position.copy(P).addScaledVector(splitDir, 9);
     plinthB.scale.y = Math.max(0.001, smooth(0, 0.35, s));
     plinthB.visible = s > 0.01;
+    tagA.position.copy(P).addScaledVector(splitDir, -9).add(v(0, 6.5, -5));
+    tagB.position.copy(P).addScaledVector(splitDir, 9).add(v(0, 6.5, -5));
     tagA.material.opacity = tagB.material.opacity = smooth(0.1, 0.4, s);
     const tint = smooth(0, 0.3, s);
     apps.forEach(ap => {
       ap.a.material.color.setHex(p.model).lerp(tmpColor.setHex([p.accent, p.oak, p.dup][ap.type]), tint);
-      const ax = P.x - 9 * s + ap.gx, bx = P.x + 9 + ap.gx;
+      posA.set(P.x + ap.gx, 0.6, P.z + ap.gz).addScaledVector(splitDir, -9 * s);
+      posB.set(P.x + ap.gx, 0.6, P.z + ap.gz).addScaledVector(splitDir, 9);
       if (ap.type === 0) { // rebuilt on the new platform, retired on the old one
         const m = smooth(0.3, 1, s);
-        ap.a.position.set(ax + (bx - ax) * m, 0.6 + Math.sin(Math.PI * m) * 4, P.z + ap.gz);
+        ap.a.position.lerpVectors(posA, posB, m);
+        ap.a.position.y += Math.sin(Math.PI * m) * 4;
       } else {
-        ap.a.position.x = ax;
+        ap.a.position.copy(posA);
         ap.a.scale.x = ap.type === 1 ? 1 - 0.5 * smooth(0.3, 0.6, s) : 1;
-        ap.twin.position.x = bx;
+        ap.twin.position.copy(posB);
         ap.twin.scale.set(ap.type === 1 ? 0.5 : 1, Math.max(0.001, smooth(0.45, 0.9, s)), 1);
         ap.twin.visible = ap.twin.scale.y > 0.01;
       }

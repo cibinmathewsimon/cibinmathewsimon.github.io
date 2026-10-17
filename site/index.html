@@ -2,18 +2,22 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Cibin Mathew Simon</title>
 <meta name="description" content="Cibin Mathew Simon, full-stack Solution Architect designing and delivering cloud-based ERP and eCommerce platforms with Java and Angular.">
 <meta property="og:title" content="Cibin Mathew Simon, Solution Architect">
+<meta property="og:description" content="Full-stack Solution Architect designing cloud-based ERP and eCommerce platforms with Java and Angular.">
 <meta property="og:type" content="website">
+<meta name="theme-color" content="#E4E6E8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0F141B" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2314305A'/%3E%3Crect x='9' y='17' width='14' height='7' fill='%23F6F7F8'/%3E%3Crect x='11' y='11' width='10' height='5' fill='%23F6F7F8'/%3E%3Crect x='13' y='6' width='6' height='4' fill='%23B9824A'/%3E%3C/svg%3E">
 <script>
   // apply the saved theme before first paint, so returning visitors never see a flash
   try { const t = localStorage.getItem('cms-theme'); if (t === 'dark' || t === 'light') document.documentElement.dataset.theme = t; } catch (e) {}
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
 /* An architect's maquette: a scale model on concrete (or under night light), read through spec sheets. */
 :root {
@@ -24,30 +28,41 @@
   --slate: #5B6675;
   --ink: #1C2433;
   --rule: #C9CED6;
+  --shadow: 20 48 90;
   --gutter: max(16px, 5vw);
+  --mono: "IBM Plex Mono", ui-monospace, monospace;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --concrete: #0F141B; --model: #18202B; --prussian: #9DB8EA; --oak: #D9A066;
-    --slate: #95A1B5; --ink: #E6EBF3; --rule: #2C3646; color-scheme: dark;
+    --slate: #95A1B5; --ink: #E6EBF3; --rule: #2C3646; --shadow: 0 0 0; color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --concrete: #0F141B; --model: #18202B; --prussian: #9DB8EA; --oak: #D9A066;
-  --slate: #95A1B5; --ink: #E6EBF3; --rule: #2C3646; color-scheme: dark;
+  --slate: #95A1B5; --ink: #E6EBF3; --rule: #2C3646; --shadow: 0 0 0; color-scheme: dark;
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; scroll-padding-top: 72px; }
 body {
   margin: 0; background: var(--concrete); color: var(--ink);
   font: 400 1.0625rem/1.6 "Archivo", system-ui, sans-serif; font-variation-settings: "wdth" 100;
   -webkit-font-smoothing: antialiased; overflow-x: hidden;
 }
+/* paper grain over the whole maquette */
+body::after {
+  content: ""; position: fixed; inset: 0; z-index: 2; pointer-events: none; opacity: .06; mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
 a { color: inherit; }
 :focus-visible { outline: 2px solid var(--oak); outline-offset: 3px; border-radius: 3px; }
 h1, h2, h3 { margin: 0; color: var(--prussian); text-wrap: balance; }
-p { margin: 0; }
+p { margin: 0; text-wrap: pretty; }
+.skip { position: absolute; left: 12px; top: -60px; z-index: 30; padding: 10px 14px; background: var(--prussian); color: var(--model); border-radius: 4px; }
+.skip:focus { top: 12px; }
+.kicker { font: 500 0.75rem/1.2 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--oak); display: flex; align-items: center; gap: 10px; }
+.kicker::before { content: ""; width: 22px; height: 1.5px; background: currentColor; }
 
 #scene { position: fixed; inset: 0; width: 100%; height: 100%; display: block; z-index: 0; }
 .no-webgl #scene { display: none; }
@@ -55,36 +70,52 @@ p { margin: 0; }
 /* ---------- top bar ---------- */
 .bar {
   position: fixed; top: 0; left: 0; right: 0; z-index: 10; display: flex; align-items: center; gap: 20px;
-  padding: 14px var(--gutter); background: color-mix(in srgb, var(--concrete) 72%, transparent);
-  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  padding: 12px var(--gutter); padding-top: max(12px, env(safe-area-inset-top));
+  background: color-mix(in srgb, var(--concrete) 70%, transparent);
+  backdrop-filter: blur(14px) saturate(1.2); -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  border-bottom: 1px solid color-mix(in srgb, var(--rule) 60%, transparent);
 }
-.mark { font-weight: 800; font-variation-settings: "wdth" 118; text-decoration: none; color: var(--prussian); margin-right: auto; letter-spacing: -0.01em; }
-.bar nav { display: flex; gap: 20px; font-size: 0.9375rem; }
-.bar nav a { text-decoration: none; color: var(--slate); padding-block: 4px; border-bottom: 2px solid transparent; }
+/* reading progress, where scroll-driven animations are supported */
+.bar::after {
+  content: ""; position: absolute; left: 0; bottom: -1px; height: 2px; width: 100%; background: var(--oak);
+  transform-origin: left; transform: scaleX(0); animation: progress linear both; animation-timeline: scroll(root);
+}
+@keyframes progress { to { transform: scaleX(1); } }
+@supports not (animation-timeline: scroll()) { .bar::after { display: none; } }
+.mark { display: flex; align-items: center; gap: 10px; font-weight: 800; font-variation-settings: "wdth" 118; text-decoration: none; color: var(--prussian); margin-right: auto; letter-spacing: -0.01em; white-space: nowrap; }
+.mark i { width: 26px; height: 26px; border-radius: 6px; background: var(--prussian); display: grid; place-items: center; color: var(--model); font: 700 0.75rem/1 var(--mono); font-style: normal; letter-spacing: 0; }
+.bar nav { display: flex; gap: 22px; font-size: 0.9375rem; }
+.bar nav a { text-decoration: none; color: var(--slate); padding-block: 4px; border-bottom: 2px solid transparent; transition: color .2s, border-color .2s; }
 .bar nav a:hover, .bar nav a.on { color: var(--prussian); border-bottom-color: var(--oak); }
-.theme {
-  width: 38px; height: 38px; display: grid; place-items: center; border-radius: 50%; cursor: pointer;
-  border: 1.5px solid var(--rule); background: transparent; color: var(--prussian);
+.icon-btn {
+  width: 40px; height: 40px; flex: none; display: grid; place-items: center; border-radius: 50%; cursor: pointer;
+  border: 1.5px solid var(--rule); background: transparent; color: var(--prussian); transition: border-color .2s, transform .15s;
 }
-.theme svg { width: 18px; height: 18px; }
+.icon-btn:hover { border-color: var(--prussian); }
+.icon-btn:active { transform: scale(.94); }
+.icon-btn svg { width: 18px; height: 18px; }
+.menu { display: none; }
 .btn {
-  display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; border-radius: 4px; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 8px; padding: 13px 20px; border-radius: 4px; cursor: pointer;
   font: 600 0.9375rem/1 "Archivo", sans-serif; text-decoration: none; border: 1.5px solid var(--prussian);
-  background: var(--prussian); color: var(--model); transition: background .2s, color .2s, border-color .2s;
+  background: var(--prussian); color: var(--model); transition: background .2s, color .2s, border-color .2s, transform .15s, box-shadow .2s;
+  box-shadow: 0 6px 18px -8px rgb(var(--shadow) / .5);
 }
-.btn:hover { background: var(--oak); border-color: var(--oak); color: #fff; }
-.btn.ghost { background: transparent; color: var(--prussian); }
-.btn.ghost:hover { background: var(--prussian); color: var(--model); }
-.bar .btn { padding: 9px 14px; }
-@media (max-width: 860px) { .bar nav { display: none; } }
+.btn:hover { background: var(--oak); border-color: var(--oak); color: #fff; transform: translateY(-1px); }
+.btn:active { transform: translateY(1px) scale(.98); }
+.btn.ghost { background: color-mix(in srgb, var(--model) 55%, transparent); color: var(--prussian); box-shadow: none; }
+.btn.ghost:hover { background: var(--prussian); border-color: var(--prussian); color: var(--model); }
+.btn svg { width: 16px; height: 16px; }
+.bar .btn { padding: 10px 14px; }
 
 /* ---------- chapters ---------- */
 main { position: relative; z-index: 1; }
 .chapter { position: relative; padding: 58vh var(--gutter) 14vh; }
 .sheet {
-  position: relative; width: min(460px, 100%); padding: 26px 26px 28px;
-  background: color-mix(in srgb, var(--model) 90%, transparent); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
-  border-left: 4px solid var(--prussian); display: grid; gap: 14px;
+  position: relative; width: min(470px, 100%); padding: 28px 28px 30px;
+  background: color-mix(in srgb, var(--model) 88%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border-left: 4px solid var(--prussian); border-radius: 2px 8px 8px 2px; display: grid; gap: 14px;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--rule) 70%, transparent), 0 24px 60px -28px rgb(var(--shadow) / .45);
 }
 .chapter.right .sheet { margin-left: auto; }
 /* pin the sheet beside the model only when the whole sheet fits on screen */
@@ -92,96 +123,190 @@ main { position: relative; z-index: 1; }
   .chapter { min-height: 190vh; padding: 0 var(--gutter); }
   .sheet { position: sticky; top: 13vh; }
 }
-.sheet h2 { font-size: clamp(1.7rem, 3.4vw, 2.5rem); line-height: 1.02; font-weight: 800; font-variation-settings: "wdth" 120; letter-spacing: -0.02em; }
+.sheet h2 { font-size: clamp(1.75rem, 3.4vw, 2.5rem); line-height: 1.02; font-weight: 800; font-variation-settings: "wdth" 120; letter-spacing: -0.02em; }
 .sheet p, .sheet li { color: var(--slate); }
 .sheet b { color: var(--ink); font-weight: 600; }
 .sheet ul, .sheet ol { margin: 0; padding-left: 1.1em; display: grid; gap: 6px; }
 
 /* hero */
-.hero { min-height: 100vh; display: grid; align-content: end; padding: 0 var(--gutter) 9vh; }
+.hero { position: relative; min-height: 100vh; min-height: 100svh; display: grid; align-content: end; gap: 22px; padding: 96px var(--gutter) 9vh; }
 .hero h1 {
   font-size: clamp(3.2rem, 10.5vw, 9.5rem); line-height: 0.86; font-weight: 900; font-variation-settings: "wdth" 125;
   letter-spacing: -0.035em; max-width: 9ch;
 }
-.hero-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 18px 28px; margin-top: 26px; }
+.hero h1 span { color: var(--oak); }
+.hero-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 18px 28px; margin-top: 4px; }
 .hero-foot p { max-width: min(44ch, 100%); font-size: 1.125rem; }
 .hero-foot .actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.cue { position: absolute; right: var(--gutter); bottom: 9vh; display: flex; align-items: center; gap: 12px; font: 500 0.75rem/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--slate); writing-mode: vertical-rl; }
+.cue::after { content: ""; width: 1.5px; height: 56px; background: linear-gradient(var(--oak), transparent); animation: drop 2.2s ease-in-out infinite; transform-origin: top; }
+@keyframes drop { 0% { transform: scaleY(0); } 50% { transform: scaleY(1); } 100% { transform: scaleY(1); opacity: 0; } }
 
 /* platform */
-.facts { margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 18px; }
+.facts { margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 18px; }
 .facts div { border-top: 1px solid var(--rule); padding-top: 8px; }
-.facts dt { font-size: 0.875rem; color: var(--slate); }
-.facts dd { margin: 0; font-weight: 700; font-variation-settings: "wdth" 112; color: var(--prussian); font-size: 1.15rem; line-height: 1.2; }
-.inspect { min-height: 5.2em; padding: 12px 14px; background: color-mix(in srgb, var(--concrete) 80%, transparent); border-radius: 4px; font-size: 0.9375rem; }
+.facts dt { font-size: 0.8125rem; color: var(--slate); }
+.facts dd { margin: 0; font-weight: 700; font-variation-settings: "wdth" 112; color: var(--prussian); font-size: 1.15rem; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.inspect { min-height: 5.2em; padding: 12px 14px; background: color-mix(in srgb, var(--concrete) 80%, transparent); border-radius: 6px; font-size: 0.9375rem; color: var(--slate); border: 1px dashed var(--rule); }
 .inspect b { display: block; color: var(--prussian); }
+/* on phones the inspector floats over the model instead of sitting in the sheet */
+.tip {
+  position: fixed; left: var(--gutter); right: var(--gutter); bottom: max(16px, env(safe-area-inset-bottom)); z-index: 12;
+  padding: 12px 16px; border-radius: 10px; font-size: 0.9rem; line-height: 1.45; color: var(--slate);
+  background: color-mix(in srgb, var(--model) 92%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-left: 3px solid var(--oak); box-shadow: 0 18px 40px -18px rgb(var(--shadow) / .55), inset 0 0 0 1px color-mix(in srgb, var(--rule) 70%, transparent);
+  animation: rise .3s ease-out;
+}
+.tip b { display: block; color: var(--prussian); }
+.tip[hidden] { display: none; }
+@keyframes rise { from { transform: translateY(12px); opacity: 0; } }
 
 /* demerger legend */
 .legend { list-style: none; padding: 0 !important; }
 .legend li { display: grid; grid-template-columns: 18px minmax(0, 1fr); gap: 10px; align-items: start; }
-.legend i { width: 14px; height: 14px; margin-top: 5px; border-radius: 2px; }
+.legend i { width: 14px; height: 14px; margin-top: 5px; border-radius: 3px; }
+.legend .rebuilt { background: var(--prussian); }
+.legend .split { background: var(--oak); }
+.legend .dup { background: #7C93B8; }
 
 /* career floors */
-.floors { list-style: none; padding: 0 !important; gap: 0 !important; }
-.floors li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; padding: 8px 0; border-top: 1px solid var(--rule); }
-.floors li span { font-size: 0.875rem; white-space: nowrap; }
+.floors { list-style: none; padding: 0 !important; gap: 0 !important; counter-reset: floor; }
+.floors li { display: grid; grid-template-columns: 2.2em minmax(0, 1fr) auto; gap: 10px; align-items: baseline; padding: 9px 0; border-top: 1px solid var(--rule); transition: opacity .3s; opacity: .55; }
+.floors li::before { counter-increment: floor; content: "L" counter(floor); font: 500 0.75rem/1 var(--mono); color: var(--slate); }
+.floors li span { font: 400 0.75rem/1.3 var(--mono); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.floors li.lit { opacity: 1; }
 .floors li.lit b { color: var(--prussian); }
-.floors li.now b::after { content: ""; display: inline-block; width: 8px; height: 8px; margin-left: 8px; border-radius: 50%; background: var(--oak); vertical-align: middle; }
+.floors li.now::before, .floors li.now span { color: var(--oak); font-weight: 500; }
+.no-webgl .floors li { opacity: 1; }
 
 /* plain sections */
 .plain { position: relative; padding: 18vh var(--gutter); }
-.plain .inner { max-width: 1100px; background: color-mix(in srgb, var(--model) 92%, transparent); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); padding: clamp(24px, 4vw, 48px); }
-.plain h2 { font-size: clamp(2rem, 4.4vw, 3.4rem); line-height: 1; font-weight: 800; font-variation-settings: "wdth" 120; letter-spacing: -0.02em; margin-bottom: 28px; }
-.skills { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px 36px; }
-.skills h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+.plain .inner {
+  max-width: 1160px; margin-inline: auto; background: color-mix(in srgb, var(--model) 92%, transparent);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); padding: clamp(24px, 5vw, 64px); border-radius: 10px;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--rule) 70%, transparent), 0 30px 80px -40px rgb(var(--shadow) / .5);
+}
+.plain h2 { font-size: clamp(2.1rem, 5vw, 4rem); line-height: 0.98; font-weight: 800; font-variation-settings: "wdth" 120; letter-spacing: -0.025em; margin: 14px 0 36px; }
+.skills { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: 0 40px; counter-reset: skill; }
+.skills > div { border-top: 1px solid var(--rule); padding: 16px 0 22px; }
+.skills h3 { font-size: 1.05rem; font-weight: 700; font-variation-settings: "wdth" 112; margin-bottom: 8px; display: flex; align-items: baseline; gap: 10px; }
+.skills h3::before { counter-increment: skill; content: counter(skill, decimal-leading-zero); font: 500 0.75rem/1 var(--mono); color: var(--oak); }
 .skills p { color: var(--slate); font-size: 0.9375rem; }
-.skills .lead h3 { color: var(--oak); }
-.decisions { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 28px; margin-top: 44px; }
-.decisions h3 { font-size: 1.15rem; font-weight: 700; font-variation-settings: "wdth" 110; margin-bottom: 6px; }
+.skills .lead { border-top: 2px solid var(--oak); }
+.decisions-head { margin-top: 48px; }
+.decisions { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 16px; margin-top: 18px; }
+.decisions > div { padding: 22px; border-radius: 8px; background: color-mix(in srgb, var(--concrete) 70%, transparent); transition: transform .25s, box-shadow .25s; }
+.decisions > div:hover { transform: translateY(-3px); box-shadow: 0 18px 40px -24px rgb(var(--shadow) / .55); }
+.decisions h3 { font-size: 1.2rem; font-weight: 700; font-variation-settings: "wdth" 112; margin-bottom: 8px; }
 .decisions p { color: var(--slate); font-size: 0.9375rem; }
 
-.contact .inner { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 32px; align-items: start; }
-.contact p { color: var(--slate); max-width: 54ch; }
-.contact h2 { margin-bottom: 14px; }
-.contact img { width: 128px; height: 128px; border-radius: 50%; object-fit: cover; border: 3px solid var(--oak); }
-.contact .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
-.downloads { margin-top: 18px; font-size: 0.9375rem; }
-footer { position: relative; z-index: 1; padding: 22px var(--gutter) 30px; font-size: 0.875rem; color: var(--slate); }
-@media (max-width: 640px) { .contact .inner { grid-template-columns: minmax(0, 1fr); } .sheet { padding: 22px; } }
+.contact .inner { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: clamp(24px, 4vw, 48px); align-items: start; }
+.contact p { color: var(--slate); max-width: 56ch; }
+.contact h2 { margin-bottom: 16px; }
+.contact img { width: 152px; height: 152px; border-radius: 28%; object-fit: cover; border: 3px solid var(--oak); box-shadow: 0 20px 40px -20px rgb(var(--shadow) / .6); }
+.contact .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+.downloads { margin-top: 20px; font-size: 0.9375rem; }
+.downloads a { color: var(--prussian); text-decoration-color: var(--oak); text-underline-offset: 3px; }
+footer { position: relative; z-index: 1; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 20px; padding: 22px var(--gutter) max(30px, env(safe-area-inset-bottom)); font: 400 0.8125rem/1.4 var(--mono); color: var(--slate); }
+footer a { text-decoration: none; }
+footer a:hover { color: var(--prussian); }
 .no-webgl .chapter { min-height: auto; padding-block: 12vh; }
-@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+/* ---------- phones and tablets ---------- */
+@media (max-width: 900px) {
+  .bar { gap: 8px; }
+  .mark { font-size: 0.95rem; }
+  .menu { display: grid; }
+  .bar nav {
+    position: absolute; top: 100%; left: 0; right: 0; flex-direction: column; gap: 0; padding: 6px var(--gutter) 14px;
+    background: var(--concrete); box-shadow: 0 24px 40px -24px rgb(var(--shadow) / .5);
+    border-bottom: 1px solid var(--rule); font-size: 1.05rem;
+    opacity: 0; visibility: hidden; transform: translateY(-6px); transition: opacity .2s, transform .2s, visibility .2s;
+  }
+  .bar.open nav { opacity: 1; visibility: visible; transform: none; }
+  .bar nav a { padding: 12px 0; border-bottom: 1px solid var(--rule); }
+  .bar nav a:last-child { border-bottom: 0; }
+  .bar .btn span { display: none; }
+  /* each chapter opens on an empty stage, so the model builds in full view before the sheet slides over it */
+  .chapter { padding: 0 var(--gutter) 12vh; }
+  .chapter::before { content: ""; display: block; height: 125svh; }
+  .sheet, .chapter.right .sheet { width: 100%; max-width: 560px; margin-inline: auto; }
+  .hero { padding-bottom: 7vh; }
+  .cue { display: none; }
+  .plain { padding: 12vh var(--gutter); }
+  .no-webgl .chapter::before { display: none; }
+}
+@media (min-width: 901px) { .tip { display: none; } }
+@media (max-width: 640px) {
+  .contact .inner { grid-template-columns: minmax(0, 1fr); }
+  .contact img { width: 112px; height: 112px; }
+  .sheet { padding: 22px 20px 24px; }
+  .floors li { grid-template-columns: 2.2em minmax(0, 1fr); row-gap: 2px; }
+  .floors li span { grid-column: 2; }
+  .hero-foot p { font-size: 1.0625rem; }
+  .hero-foot .actions, .contact .actions { width: 100%; }
+  .hero-foot .actions .btn, .contact .actions .btn { flex: 1; justify-content: center; }
+}
+@media (max-width: 380px) { .mark span { display: none; } }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .cue::after, .tip { animation: none; }
+}
 </style>
 <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }</script>
 </head>
 <body>
+<a class="skip" href="#career">Skip to content</a>
 <canvas id="scene" aria-hidden="true"></canvas>
 
-<header class="bar">
-  <a class="mark" href="#top">Cibin Mathew Simon</a>
-  <nav aria-label="Sections">
+<header class="bar" id="bar">
+  <a class="mark" href="#top"><i aria-hidden="true">CMS</i><span>Cibin Mathew Simon</span></a>
+  <nav id="nav" aria-label="Sections">
+    <a href="#career">Career</a>
     <a href="#platform">Platform</a>
     <a href="#portfolio">Migration</a>
-    <a href="#career">Career</a>
     <a href="#skills">Skills</a>
     <a href="#contact">Contact</a>
   </nav>
-  <button class="theme" id="theme" type="button" aria-label="Switch to dark theme"></button>
-  <a class="btn" href="cv/Cibin-Mathew-Simon-Resume.pdf" download>Resume PDF</a>
+  <button class="icon-btn" id="theme" type="button" aria-label="Switch to dark theme"></button>
+  <a class="btn" href="cv/Cibin-Mathew-Simon-Resume.pdf" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Resume<span>&nbsp;PDF</span></a>
+  <button class="icon-btn menu" id="menu" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 8h16M4 16h16"/></svg></button>
 </header>
 
 <main id="top">
   <section class="hero" data-cam="hero">
-    <h1>Cibin Mathew Simon</h1>
+    <p class="kicker">Solution Architect · Java · Angular · Google Cloud</p>
+    <h1>Cibin Mathew Simon<span>.</span></h1>
     <div class="hero-foot">
       <p>Full-stack Solution Architect. I design and build cloud-based ERP and eCommerce platforms with Java and Angular, from the first requirement to production.</p>
       <div class="actions">
-        <a class="btn" href="#platform">See my work</a>
+        <a class="btn" href="#career">See my work</a>
         <a class="btn ghost" href="cv/Cibin-Mathew-Simon-Resume.pdf" download>Download resume</a>
       </div>
+    </div>
+    <p class="cue" aria-hidden="true">Scroll to build</p>
+  </section>
+
+  <section class="chapter right" id="career" data-cam="career">
+    <div class="sheet">
+      <p class="kicker">01 · Career</p>
+      <h2>Built floor by floor</h2>
+      <p>Eight years at Rappit, from associate software engineer to solution architect.</p>
+      <ol class="floors" id="floors">
+        <li><b>Associate Software Engineer</b><span>Jun 2018 – Jan 2020</span></li>
+        <li><b>Software Engineer</b><span>Jan 2020 – Jan 2022</span></li>
+        <li><b>Team Lead</b><span>Jan 2022 – Feb 2023</span></li>
+        <li><b>Technical Lead</b><span>Jan 2023 – Mar 2024</span></li>
+        <li><b>Associate Solution Architect I</b><span>Feb 2024 – Dec 2025</span></li>
+        <li class="now"><b>Associate Solution Architect II</b><span>Jan 2026 – now</span></li>
+      </ol>
+      <p>Before Rappit: B.Tech in Computer Science, SCMS School of Engineering and Technology, 2018.</p>
     </div>
   </section>
 
   <section class="chapter" id="platform" data-cam="platform">
     <div class="sheet">
+      <p class="kicker">02 · Current platform</p>
       <h2>A furniture platform, live in under six months</h2>
       <p>Sales staff at a European home-furnishing retailer configure custom furniture with customers on an iPad, then sell it on the spot. It replaced a 1990s DOS system. I am the technical architect for a team of eight.</p>
       <p>I chose a modular monolith so a small team could ship fast, with module boundaries ready for the planned warehouse and ERP microservices.</p>
@@ -197,36 +322,22 @@ footer { position: relative; z-index: 1; padding: 22px var(--gutter) 30px; font-
 
   <section class="chapter right" id="portfolio" data-cam="portfolio">
     <div class="sheet">
+      <p class="kicker">03 · 2018 – 2025</p>
       <h2>Twenty applications through a company split</h2>
       <p>From 2018 to 2025 I worked on around 20 applications for a global chemical company headquartered in Europe, from HR and research dashboards to shareholder payouts and an IoT data pipeline. The team grew from 4 to 15 engineers.</p>
       <p>When the company split in two, I led the migration and chose a plan for every application:</p>
       <ul class="legend">
-        <li><i style="background:var(--prussian)"></i><span><b>Rebuilt</b> on the new company's GCP platform, then retired on the old one</span></li>
-        <li><i style="background:var(--oak)"></i><span><b>Split</b> into one application for each company</span></li>
-        <li><i style="background:#7C93B8"></i><span><b>Duplicated</b> so both companies keep a copy</span></li>
+        <li><i class="rebuilt"></i><span><b>Rebuilt</b> on the new company's GCP platform, then retired on the old one</span></li>
+        <li><i class="split"></i><span><b>Split</b> into one application for each company</span></li>
+        <li><i class="dup"></i><span><b>Duplicated</b> so both companies keep a copy</span></li>
       </ul>
       <p>Along the way I standardised the CI/CD pipelines, reduced cloud costs and mentored developers into team leads.</p>
     </div>
   </section>
 
-  <section class="chapter" id="career" data-cam="career">
-    <div class="sheet">
-      <h2>Built floor by floor</h2>
-      <p>Eight years at Rappit, from associate software engineer to solution architect.</p>
-      <ol class="floors" id="floors">
-        <li><b>Associate Software Engineer</b><span>Jun 2018 – Jan 2020</span></li>
-        <li><b>Software Engineer</b><span>Jan 2020 – Jan 2022</span></li>
-        <li><b>Team Lead</b><span>Jan 2022 – Feb 2023</span></li>
-        <li><b>Technical Lead</b><span>Jan 2023 – Mar 2024</span></li>
-        <li><b>Associate Solution Architect I</b><span>Feb 2024 – Dec 2025</span></li>
-        <li class="now"><b>Associate Solution Architect II</b><span>Jan 2026 – now</span></li>
-      </ol>
-      <p>Before Rappit: B.Tech in Computer Science, SCMS School of Engineering and Technology, 2018.</p>
-    </div>
-  </section>
-
   <section class="plain" id="skills" data-cam="skills">
     <div class="inner">
+      <p class="kicker">04 · Toolkit</p>
       <h2>What I work with</h2>
       <div class="skills">
         <div class="lead"><h3>Back end</h3><p>Java 21, Spring Boot, REST APIs, domain-driven design, modular monolith, event-driven architecture, microservices design, integration patterns, retries and idempotency</p></div>
@@ -236,6 +347,7 @@ footer { position: relative; z-index: 1; padding: 22px var(--gutter) 30px; font-
         <div><h3>Delivery</h3><p>GitLab CI/CD, Docker, 3-week sprints with weekly or biweekly releases</p></div>
         <div><h3>Front end</h3><p>Angular, TypeScript, progressive web apps</p></div>
       </div>
+      <p class="kicker decisions-head">Decisions I stand by</p>
       <div class="decisions">
         <div><h3>Modular monolith first</h3><p>The furniture platform had to reach production in about six months with a small team. Clear module boundaries keep a later move to microservices open for the planned warehouse phase.</p></div>
         <div><h3>Behaviour in data, not code</h3><p>Products, options and validity rules live in data, so a new supplier or product range goes live without a release.</p></div>
@@ -246,8 +358,9 @@ footer { position: relative; z-index: 1; padding: 22px var(--gutter) 30px; font-
 
   <section class="plain contact" id="contact" data-cam="contact">
     <div class="inner">
-      <img src="photo.jpg" width="128" height="128" alt="Portrait of Cibin Mathew Simon">
+      <img src="photo.jpg" width="152" height="152" alt="Portrait of Cibin Mathew Simon">
       <div>
+        <p class="kicker">05 · Contact</p>
         <h2>Let's talk</h2>
         <p>I'm open to Solution Architect, Technical Architect and Principal Engineer roles, in India, Europe or remote. I also run technical interviews and train freshers at Rappit.</p>
         <div class="actions">
@@ -259,7 +372,8 @@ footer { position: relative; z-index: 1; padding: 22px var(--gutter) 30px; font-
     </div>
   </section>
 </main>
-<footer>© <span id="year">2026</span> Cibin Mathew Simon</footer>
+<div class="tip" id="tip" aria-hidden="true" hidden></div>
+<footer><span>© <span id="year">2026</span> Cibin Mathew Simon</span><a href="#top">Back to top ↑</a></footer>
 
 <script type="module" src="app.js"></script>
 </body>
