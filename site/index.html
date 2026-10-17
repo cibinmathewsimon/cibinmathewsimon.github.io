@@ -7,11 +7,15 @@
 <meta name="description" content="Cibin Mathew Simon, full-stack Solution Architect designing and delivering cloud-based ERP and eCommerce platforms with Java and Angular.">
 <meta property="og:title" content="Cibin Mathew Simon, Solution Architect">
 <meta property="og:type" content="website">
+<script>
+  // apply the saved theme before first paint, so returning visitors never see a flash
+  try { const t = localStorage.getItem('cms-theme'); if (t === 'dark' || t === 'light') document.documentElement.dataset.theme = t; } catch (e) {}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&display=swap">
 <style>
-/* An architect's maquette: a white scale model on concrete, read through pinned spec sheets. */
+/* An architect's maquette: a scale model on concrete (or under night light), read through spec sheets. */
 :root {
   --concrete: #E4E6E8;
   --model: #F6F7F8;
@@ -21,6 +25,17 @@
   --ink: #1C2433;
   --rule: #C9CED6;
   --gutter: max(16px, 5vw);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --concrete: #0F141B; --model: #18202B; --prussian: #9DB8EA; --oak: #D9A066;
+    --slate: #95A1B5; --ink: #E6EBF3; --rule: #2C3646; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --concrete: #0F141B; --model: #18202B; --prussian: #9DB8EA; --oak: #D9A066;
+  --slate: #95A1B5; --ink: #E6EBF3; --rule: #2C3646; color-scheme: dark;
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
@@ -39,40 +54,48 @@ p { margin: 0; }
 
 /* ---------- top bar ---------- */
 .bar {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 10; display: flex; align-items: center; gap: 24px;
-  padding: 14px var(--gutter); background: color-mix(in srgb, var(--concrete) 70%, transparent);
+  position: fixed; top: 0; left: 0; right: 0; z-index: 10; display: flex; align-items: center; gap: 20px;
+  padding: 14px var(--gutter); background: color-mix(in srgb, var(--concrete) 72%, transparent);
   backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
 }
 .mark { font-weight: 800; font-variation-settings: "wdth" 118; text-decoration: none; color: var(--prussian); margin-right: auto; letter-spacing: -0.01em; }
 .bar nav { display: flex; gap: 20px; font-size: 0.9375rem; }
 .bar nav a { text-decoration: none; color: var(--slate); padding-block: 4px; border-bottom: 2px solid transparent; }
 .bar nav a:hover, .bar nav a.on { color: var(--prussian); border-bottom-color: var(--oak); }
+.theme {
+  width: 38px; height: 38px; display: grid; place-items: center; border-radius: 50%; cursor: pointer;
+  border: 1.5px solid var(--rule); background: transparent; color: var(--prussian);
+}
+.theme svg { width: 18px; height: 18px; }
 .btn {
   display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; border-radius: 4px; cursor: pointer;
   font: 600 0.9375rem/1 "Archivo", sans-serif; text-decoration: none; border: 1.5px solid var(--prussian);
-  background: var(--prussian); color: var(--model); transition: background .2s, color .2s;
+  background: var(--prussian); color: var(--model); transition: background .2s, color .2s, border-color .2s;
 }
 .btn:hover { background: var(--oak); border-color: var(--oak); color: #fff; }
 .btn.ghost { background: transparent; color: var(--prussian); }
 .btn.ghost:hover { background: var(--prussian); color: var(--model); }
 .bar .btn { padding: 9px 14px; }
-@media (max-width: 760px) { .bar nav { display: none; } }
+@media (max-width: 860px) { .bar nav { display: none; } }
 
 /* ---------- chapters ---------- */
 main { position: relative; z-index: 1; }
-.chapter { position: relative; min-height: 190vh; padding: 0 var(--gutter); }
-.chapter.short { min-height: 120vh; }
+.chapter { position: relative; padding: 58vh var(--gutter) 14vh; }
 .sheet {
-  position: sticky; top: 14vh; width: min(460px, 100%); padding: 28px 28px 30px;
-  background: color-mix(in srgb, var(--model) 88%, transparent); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  position: relative; width: min(460px, 100%); padding: 26px 26px 28px;
+  background: color-mix(in srgb, var(--model) 90%, transparent); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
   border-left: 4px solid var(--prussian); display: grid; gap: 14px;
 }
 .chapter.right .sheet { margin-left: auto; }
+/* pin the sheet beside the model only when the whole sheet fits on screen */
+@media (min-width: 901px) and (min-height: 760px) {
+  .chapter { min-height: 190vh; padding: 0 var(--gutter); }
+  .sheet { position: sticky; top: 13vh; }
+}
 .sheet h2 { font-size: clamp(1.7rem, 3.4vw, 2.5rem); line-height: 1.02; font-weight: 800; font-variation-settings: "wdth" 120; letter-spacing: -0.02em; }
 .sheet p, .sheet li { color: var(--slate); }
 .sheet b { color: var(--ink); font-weight: 600; }
 .sheet ul, .sheet ol { margin: 0; padding-left: 1.1em; display: grid; gap: 6px; }
-.hint { font-size: 0.875rem; color: var(--slate); font-style: italic; }
 
 /* hero */
 .hero { min-height: 100vh; display: grid; align-content: end; padding: 0 var(--gutter) 9vh; }
@@ -81,31 +104,30 @@ main { position: relative; z-index: 1; }
   letter-spacing: -0.035em; max-width: 9ch;
 }
 .hero-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 18px 28px; margin-top: 26px; }
-.hero-foot p { max-width: min(44ch, 100%); font-size: 1.125rem; color: var(--ink); }
+.hero-foot p { max-width: min(44ch, 100%); font-size: 1.125rem; }
 .hero-foot .actions { display: flex; gap: 10px; flex-wrap: wrap; }
 
-/* career floors */
-.floors { list-style: none; padding: 0 !important; gap: 0 !important; }
-.floors li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; padding: 8px 0; border-top: 1px solid var(--rule); transition: color .3s; }
-.floors li span { font-size: 0.875rem; white-space: nowrap; }
-.floors li.lit { color: var(--prussian); }
-.floors li.lit b { color: var(--prussian); }
-.floors li.now b::after { content: ""; display: inline-block; width: 8px; height: 8px; margin-left: 8px; border-radius: 50%; background: var(--oak); vertical-align: middle; }
-
-/* legend for the demerger */
-.legend { list-style: none; padding: 0 !important; }
-.legend li { display: grid; grid-template-columns: 18px minmax(0, 1fr); gap: 10px; align-items: start; }
-.legend i { width: 14px; height: 14px; margin-top: 5px; border-radius: 2px; }
-
-/* platform facts */
+/* platform */
 .facts { margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 18px; }
 .facts div { border-top: 1px solid var(--rule); padding-top: 8px; }
 .facts dt { font-size: 0.875rem; color: var(--slate); }
 .facts dd { margin: 0; font-weight: 700; font-variation-settings: "wdth" 112; color: var(--prussian); font-size: 1.15rem; line-height: 1.2; }
-.inspect { min-height: 5.2em; padding: 12px 14px; background: var(--concrete); border-radius: 4px; font-size: 0.9375rem; }
+.inspect { min-height: 5.2em; padding: 12px 14px; background: color-mix(in srgb, var(--concrete) 80%, transparent); border-radius: 4px; font-size: 0.9375rem; }
 .inspect b { display: block; color: var(--prussian); }
 
-/* plain sections (no 3D focus) */
+/* demerger legend */
+.legend { list-style: none; padding: 0 !important; }
+.legend li { display: grid; grid-template-columns: 18px minmax(0, 1fr); gap: 10px; align-items: start; }
+.legend i { width: 14px; height: 14px; margin-top: 5px; border-radius: 2px; }
+
+/* career floors */
+.floors { list-style: none; padding: 0 !important; gap: 0 !important; }
+.floors li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; padding: 8px 0; border-top: 1px solid var(--rule); }
+.floors li span { font-size: 0.875rem; white-space: nowrap; }
+.floors li.lit b { color: var(--prussian); }
+.floors li.now b::after { content: ""; display: inline-block; width: 8px; height: 8px; margin-left: 8px; border-radius: 50%; background: var(--oak); vertical-align: middle; }
+
+/* plain sections */
 .plain { position: relative; padding: 18vh var(--gutter); }
 .plain .inner { max-width: 1100px; background: color-mix(in srgb, var(--model) 92%, transparent); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); padding: clamp(24px, 4vw, 48px); }
 .plain h2 { font-size: clamp(2rem, 4.4vw, 3.4rem); line-height: 1; font-weight: 800; font-variation-settings: "wdth" 120; letter-spacing: -0.02em; margin-bottom: 28px; }
@@ -117,19 +139,14 @@ main { position: relative; z-index: 1; }
 .decisions h3 { font-size: 1.15rem; font-weight: 700; font-variation-settings: "wdth" 110; margin-bottom: 6px; }
 .decisions p { color: var(--slate); font-size: 0.9375rem; }
 
-.contact .inner { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 32px; align-items: start; background: var(--prussian); color: var(--model); }
-.contact h2 { color: var(--model); margin-bottom: 14px; }
-.contact p { color: color-mix(in srgb, var(--model) 80%, var(--prussian)); max-width: 52ch; }
+.contact .inner { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 32px; align-items: start; }
+.contact p { color: var(--slate); max-width: 54ch; }
+.contact h2 { margin-bottom: 14px; }
 .contact img { width: 128px; height: 128px; border-radius: 50%; object-fit: cover; border: 3px solid var(--oak); }
 .contact .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
-.contact .btn { background: var(--model); color: var(--prussian); border-color: var(--model); }
-.contact .btn:hover { background: var(--oak); border-color: var(--oak); color: #fff; }
-.contact .btn.ghost { background: transparent; color: var(--model); }
-.contact .btn.ghost:hover { background: var(--model); color: var(--prussian); }
 .downloads { margin-top: 18px; font-size: 0.9375rem; }
-.downloads a { color: var(--model); }
 footer { position: relative; z-index: 1; padding: 22px var(--gutter) 30px; font-size: 0.875rem; color: var(--slate); }
-@media (max-width: 640px) { .contact .inner { grid-template-columns: minmax(0, 1fr); } .chapter { min-height: 170vh; } .sheet { top: 10vh; padding: 22px; } }
+@media (max-width: 640px) { .contact .inner { grid-template-columns: minmax(0, 1fr); } .sheet { padding: 22px; } }
 .no-webgl .chapter { min-height: auto; padding-block: 12vh; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 </style>
@@ -141,62 +158,33 @@ footer { position: relative; z-index: 1; padding: 22px var(--gutter) 30px; font-
 <header class="bar">
   <a class="mark" href="#top">Cibin Mathew Simon</a>
   <nav aria-label="Sections">
-    <a href="#career">Career</a>
-    <a href="#portfolio">Portfolio</a>
     <a href="#platform">Platform</a>
+    <a href="#portfolio">Migration</a>
+    <a href="#career">Career</a>
     <a href="#skills">Skills</a>
     <a href="#contact">Contact</a>
   </nav>
+  <button class="theme" id="theme" type="button" aria-label="Switch to dark theme"></button>
   <a class="btn" href="cv/Cibin-Mathew-Simon-Resume.pdf" download>Resume PDF</a>
 </header>
 
 <main id="top">
-  <section class="hero" data-cam="0">
+  <section class="hero" data-cam="hero">
     <h1>Cibin Mathew Simon</h1>
     <div class="hero-foot">
       <p>Full-stack Solution Architect. I design and build cloud-based ERP and eCommerce platforms with Java and Angular, from the first requirement to production.</p>
       <div class="actions">
-        <a class="btn" href="#career">Start the tour</a>
+        <a class="btn" href="#platform">See my work</a>
         <a class="btn ghost" href="cv/Cibin-Mathew-Simon-Resume.pdf" download>Download resume</a>
       </div>
     </div>
   </section>
 
-  <section class="chapter" id="career" data-cam="1">
-    <div class="sheet">
-      <h2>Built floor by floor</h2>
-      <p>I joined Rappit in 2018 as an associate software engineer and have grown there for eight years. Each role added a floor to the tower.</p>
-      <ol class="floors" id="floors">
-        <li><b>Associate Software Engineer</b><span>Jun 2018 – Jan 2020</span></li>
-        <li><b>Software Engineer</b><span>Jan 2020 – Jan 2022</span></li>
-        <li><b>Team Lead</b><span>Jan 2022 – Feb 2023</span></li>
-        <li><b>Technical Lead</b><span>Jan 2023 – Mar 2024</span></li>
-        <li><b>Associate Solution Architect I</b><span>Feb 2024 – Dec 2025</span></li>
-        <li class="now"><b>Associate Solution Architect II</b><span>Jan 2026 – now</span></li>
-      </ol>
-      <p class="hint">Keep scrolling to raise the tower.</p>
-    </div>
-  </section>
-
-  <section class="chapter right" id="portfolio" data-cam="2">
-    <div class="sheet">
-      <h2>Twenty applications through a company split</h2>
-      <p>From 2018 to 2025 I worked on around 20 applications for a global chemical company headquartered in Europe: HR, research dashboards and document search, shareholder payouts, an internal store, tank-level monitoring and an IoT data pipeline. The team grew from 4 to 15 engineers while I grew from developer to architect.</p>
-      <p>When the company split in two, I led the migration and chose a plan for every application:</p>
-      <ul class="legend">
-        <li><i style="background:#14305A"></i><span><b>Rebuilt</b> on the new company's GCP platform, then retired on the old one</span></li>
-        <li><i style="background:#B9824A"></i><span><b>Split</b> into one application for each company</span></li>
-        <li><i style="background:#7C93B8"></i><span><b>Duplicated</b> so both companies keep a copy</span></li>
-      </ul>
-      <p>Along the way I standardised the CI/CD pipelines, reduced cloud costs and mentored developers into team leads.</p>
-      <p class="hint">Scroll to watch the split.</p>
-    </div>
-  </section>
-
-  <section class="chapter" id="platform" data-cam="3">
+  <section class="chapter" id="platform" data-cam="platform">
     <div class="sheet">
       <h2>A furniture platform, live in under six months</h2>
       <p>Sales staff at a European home-furnishing retailer configure custom furniture with customers on an iPad, then sell it on the spot. It replaced a 1990s DOS system. I am the technical architect for a team of eight.</p>
+      <p>I chose a modular monolith so a small team could ship fast, with module boundaries ready for the planned warehouse and ERP microservices.</p>
       <dl class="facts">
         <div><dt>Configuring one product</dt><dd>~60 min to 5–8 min</dd></div>
         <div><dt>Suppliers onboarded</dt><dd>50+, each with own rules</dd></div>
@@ -207,7 +195,37 @@ footer { position: relative; z-index: 1; padding: 22px var(--gutter) 30px; font-
     </div>
   </section>
 
-  <section class="plain" id="skills" data-cam="4">
+  <section class="chapter right" id="portfolio" data-cam="portfolio">
+    <div class="sheet">
+      <h2>Twenty applications through a company split</h2>
+      <p>From 2018 to 2025 I worked on around 20 applications for a global chemical company headquartered in Europe, from HR and research dashboards to shareholder payouts and an IoT data pipeline. The team grew from 4 to 15 engineers.</p>
+      <p>When the company split in two, I led the migration and chose a plan for every application:</p>
+      <ul class="legend">
+        <li><i style="background:var(--prussian)"></i><span><b>Rebuilt</b> on the new company's GCP platform, then retired on the old one</span></li>
+        <li><i style="background:var(--oak)"></i><span><b>Split</b> into one application for each company</span></li>
+        <li><i style="background:#7C93B8"></i><span><b>Duplicated</b> so both companies keep a copy</span></li>
+      </ul>
+      <p>Along the way I standardised the CI/CD pipelines, reduced cloud costs and mentored developers into team leads.</p>
+    </div>
+  </section>
+
+  <section class="chapter" id="career" data-cam="career">
+    <div class="sheet">
+      <h2>Built floor by floor</h2>
+      <p>Eight years at Rappit, from associate software engineer to solution architect.</p>
+      <ol class="floors" id="floors">
+        <li><b>Associate Software Engineer</b><span>Jun 2018 – Jan 2020</span></li>
+        <li><b>Software Engineer</b><span>Jan 2020 – Jan 2022</span></li>
+        <li><b>Team Lead</b><span>Jan 2022 – Feb 2023</span></li>
+        <li><b>Technical Lead</b><span>Jan 2023 – Mar 2024</span></li>
+        <li><b>Associate Solution Architect I</b><span>Feb 2024 – Dec 2025</span></li>
+        <li class="now"><b>Associate Solution Architect II</b><span>Jan 2026 – now</span></li>
+      </ol>
+      <p>Before Rappit: B.Tech in Computer Science, SCMS School of Engineering and Technology, 2018.</p>
+    </div>
+  </section>
+
+  <section class="plain" id="skills" data-cam="skills">
     <div class="inner">
       <h2>What I work with</h2>
       <div class="skills">
@@ -226,7 +244,7 @@ footer { position: relative; z-index: 1; padding: 22px var(--gutter) 30px; font-
     </div>
   </section>
 
-  <section class="plain contact" id="contact" data-cam="5">
+  <section class="plain contact" id="contact" data-cam="contact">
     <div class="inner">
       <img src="photo.jpg" width="128" height="128" alt="Portrait of Cibin Mathew Simon">
       <div>
@@ -241,7 +259,7 @@ footer { position: relative; z-index: 1; padding: 22px var(--gutter) 30px; font-
     </div>
   </section>
 </main>
-<footer>B.Tech in Computer Science, SCMS School of Engineering and Technology, 2018. Kerala, India.</footer>
+<footer>© <span id="year">2026</span> Cibin Mathew Simon</footer>
 
 <script type="module" src="app.js"></script>
 </body>
