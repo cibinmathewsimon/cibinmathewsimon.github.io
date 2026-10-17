@@ -1,0 +1,4 @@
+.DS_Store
+public/
+# CV builds that contain the phone number: never commit
+private/

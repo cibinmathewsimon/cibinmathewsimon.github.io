@@ -1,0 +1,93 @@
+{
+  "name": "Cibin Mathew Simon",
+  "headline": "Full-stack Solution Architect · Cloud ERP & eCommerce · Java + Angular",
+  "headline_long": "Full-stack Solution Architect designing and delivering cloud-based ERP and eCommerce platforms with Java and Angular, from first requirement to production.",
+  "location": "Kerala, India",
+  "email": "cibinmathewsimon@gmail.com",
+  "linkedin": "linkedin.com/in/cibin-mathew-simon",
+  "website": "cibinmathewsimon.github.io",
+
+  "summary": "Full-stack Solution Architect with 8+ years at Rappit designing and delivering cloud-based ERP and eCommerce platforms with Java, Spring Boot and Angular on Google Cloud. Took a data-driven in-store commerce platform from first requirement to production in under six months, and led the migration of a ~20-application enterprise portfolio through a corporate demerger. Works directly with European stakeholders and stays hands-on across back end, data and cloud.",
+  "summary_full": "Full-stack Solution Architect with 8+ years at Rappit, growing from developer to architect on cloud-based ERP and eCommerce platforms for European clients. I design back-end-heavy systems with Java, Spring Boot and Angular on Google Cloud, favouring pragmatic architecture: a modular monolith when speed to market matters, events at the seams, and data-driven designs that let the business change behaviour without a release. Recent work includes an in-store furniture commerce platform that went from first requirement to production in under six months, and the portfolio migration of ~20 enterprise applications through a corporate demerger.",
+
+  "company": "Rappit",
+  "company_location": "India",
+  "company_dates": "Jun 2018 – Present",
+  "roles": [
+    ["Associate Solution Architect II", "Jan 2026 – Present"],
+    ["Associate Solution Architect I", "Feb 2024 – Dec 2025"],
+    ["Technical Lead", "Jan 2023 – Mar 2024"],
+    ["Team Lead", "Jan 2022 – Feb 2023"],
+    ["Software Engineer", "Jan 2020 – Jan 2022"],
+    ["Associate Software Engineer", "Jun 2018 – Jan 2020"]
+  ],
+
+  "projects": [
+    {
+      "name": "In-store furniture commerce platform",
+      "client": "European home-furnishing retailer",
+      "dates": "Jun 2025 – Present",
+      "role": "Technical Architect",
+      "context": "An iPad progressive web app used by sales staff in the showroom to configure custom furniture with customers and sell it directly. It replaced a 1990s DOS-based configuration system and is live in 3 stores.",
+      "team": "Team of 8: technical architect (me), delivery manager, front-end lead, front-end developer, 3 full-stack developers, tester.",
+      "stack": "Java 21, Spring Boot, Angular PWA, PostgreSQL, Elasticsearch, Redis, BigQuery, Google Pub/Sub, Cloud Run, GitLab CI, Cloud Logging & Monitoring",
+      "bullets": [
+        "Architected a data-driven platform on Java 21, Spring Boot, Angular PWA and GCP Cloud Run, from first requirement in Jun 2025 to production in Nov 2025, as a modular monolith (PIM + Sales: ordering, discounts, delivery, payments, contracts) built to split into microservices for a future warehouse and ERP phase.",
+        "Designed the data-driven product configurator and rule builder (guided flows and 2D drag-and-drop) that keeps every configuration consistent; 50+ suppliers onboarded, each with its own rule set, without code changes.",
+        "Introduced event-driven integration with Google Pub/Sub across modules, stock monitoring, BigQuery analytics and an AI service that converts supplier brochures into structured product data.",
+        "Cut product configuration time from ~60 min to 5–8 min; 100+ orders/day across 3 stores and growing; search under 500 ms with Elasticsearch.",
+        "Technical architect for a team of 8; 3-week sprints with weekly or biweekly rapid releases via GitLab CI; works directly with the client, including on-site visits to the Netherlands."
+      ],
+      "decisions": [
+        ["Modular monolith over microservices", "A data-driven platform had to reach production in about six months with a small team. Clear module boundaries (PIM, Sales) keep a later split into microservices open for the planned warehouse and ERP phase."],
+        ["Data-driven configurator and rule builder", "Products, options and validity rules live in data, not code, so new suppliers and product ranges go live without a release. Supports both guided flows and a 2D drag-and-drop builder."],
+        ["Events with Google Pub/Sub", "Stock updates, analytics feeds and supplier imports are decoupled from the sales flow, so a slow consumer never blocks a sale in the store."]
+      ]
+    },
+    {
+      "name": "Enterprise application portfolio",
+      "client": "Global chemical company headquartered in Europe",
+      "dates": "Jun 2018 – May 2025",
+      "role": "Developer → Team Lead → Technical Lead → Architect",
+      "context": "Around 20 business applications on Java, Spring Boot and Angular on Google Cloud, built and maintained by a team that grew from 4 to 15 engineers.",
+      "team": "Team grew from 4 to 15 engineers; I moved from developer to architect working with junior engineers.",
+      "stack": "Java, Spring Boot, Angular, PostgreSQL, Firestore, BigQuery, Pub/Sub, Cloud Run, Cloud Functions, IAM, IAP, Cloud Armor, Load Balancing, GitLab CI",
+      "bullets": [
+        "Grew from developer to architect as the team scaled from 4 to 15 engineers.",
+        "Led the portfolio migration through a corporate demerger: chose a strategy per application (decommission and rebuild, split, or duplicate) and migrated every application to the new company's GCP platform.",
+        "Delivered applications across HR, document search and research dashboards, shareholder payouts, an internal eCommerce store, tank-level monitoring and an IoT data pipeline.",
+        "Standardised CI/CD pipelines across the portfolio and optimised GCP running costs; mentored developers into team leads."
+      ],
+      "apps": [
+        ["HR", "HR platform for internal processes."],
+        ["Data & research", "Document search and analysis platform, research dashboards."],
+        ["Finance", "Shareholder application handling large payouts to shareholders."],
+        ["Commerce", "Internal eCommerce platform."],
+        ["Industrial monitoring", "Tank-level monitoring application."],
+        ["IoT", "Application processing high volumes of sensor data through a data pipeline."]
+      ]
+    }
+  ],
+
+  "skills": [
+    ["Back end", "Java 21, Spring Boot, REST APIs, domain-driven design, modular monolith, event-driven architecture, microservices design, integration patterns, retries & idempotency"],
+    ["Data", "PostgreSQL, Elasticsearch, Redis, Firestore, BigQuery, data modelling, data pipelines"],
+    ["Cloud (GCP)", "Cloud Run, Cloud Functions, Pub/Sub, Cloud Storage, IAM, IAP, Cloud Armor, Load Balancing, Cloud DNS, Logging & Monitoring, GKE (learning)"],
+    ["Security", "OAuth2, Azure AD, Firebase Auth"],
+    ["DevOps", "GitLab CI/CD, Docker"],
+    ["Front end", "Angular, TypeScript, PWA"]
+  ],
+
+  "also": [
+    "Technical interviewer for engineering hires",
+    "Runs internal training programmes for freshers",
+    "Consistently recognised as a top performer"
+  ],
+
+  "education": {
+    "degree": "B.Tech, Computer Science",
+    "school": "SCMS School of Engineering and Technology, Kerala",
+    "year": "2018",
+    "grade": "CGPA 8.2/10"
+  }
+}
